@@ -6,10 +6,12 @@ import LocationList from "./components/LocationList/LocationList";
 import { Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout/AppLayout";
 import Hotels from "./components/Hotels/Hotels";
+import HotelsProvider from "./components/context/HotelsProvider";
 
 function App() {
   return <div>
-    <Toaster/>
+<HotelsProvider>
+<Toaster/>
     <Header/>
     <Routes>
       <Route path="/" element={ <LocationList/>}/>
@@ -18,6 +20,7 @@ function App() {
       <Route path="id" element={<div>single hotle</div>}></Route>
       </Route>
     </Routes>
+</HotelsProvider>
   </div>
 }
 
