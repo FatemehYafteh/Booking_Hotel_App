@@ -11,7 +11,7 @@ import { createSearchParams, Navigate, useSearchParams } from "react-router-dom"
 function Header() {
   const [destination, setDestination] = useState("");
   const [openOptions, setOpenOptions] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams , setSearchParams] = useSearchParams()
   const [options, setOptions] = useState({ adult: 1, children: 0, room: 1 });
   const [date , setDate] = useState ([{
     startDate: new Date(),
