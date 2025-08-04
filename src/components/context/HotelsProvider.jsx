@@ -10,7 +10,7 @@ const BASE_URL = "http://localhost:5000/hotels";
 function HotelsProvider({ children }) {
   const [currentHotel, setCurrentHotel] = useState(null);
   const [isLoadingCurrHotel, setIsLoadinCurrHotel] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const destination = searchParams.get("destination");
   const room = JSON.parse(searchParams.get("options"))?.room;
 
