@@ -1,15 +1,24 @@
-import { MdLocationOn } from "react-icons/md";
+import { MdLocationOn} from "react-icons/md";
 import { HiCalendar, HiMinus, HiPlus, HiSearch } from "react-icons/hi";
 import { useRef, useState } from "react";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRange } from "react-date-range";
 import { format } from "date-fns";
-import { createSearchParams, Navigate, useSearchParams } from "react-router-dom";
+import {
+  NavLink,
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+
 
 function Header() {
-  const [destination, setDestination] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [destination, setDestination] = useState(
+    searchParams.get("destination") || ""
+  );
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
     adult: 1,
@@ -23,15 +32,17 @@ function Header() {
       key: "selection",
     },
   ]);
-  const [openDate , setOpenDate] = useState(false);
-  const handleOptions = (name , operation) =>{
-    setOptions(prev =>{
-      return{
-            ...prev,
-            [name] : operation === "inc" ? options[name] +1 : options[name] -1 ,
-      }
-})
-  }
+  const [openDate, setOpenDate] = useState(false);
+  const navigate = useNavigate();
+
+  const handleOptions = (name, operation) => {
+    setOptions((prev) => {
+      return {
+        ...prev,
+        [name]: operation === "inc" ? options[name] + 1 : options[name] - 1,
+      };
+    });
+  };
   const handleSearch = () => {
     const encodedParams = createSearchParams({
       date: JSON.stringify(date),
@@ -39,15 +50,15 @@ function Header() {
       options: JSON.stringify(options),
     });
     //note : =>  setSearchParams(encodedParams);
-    Navigate({
+    navigate({
       pathname: "/hotels",
       search: encodedParams.toString(),
     });
   };
 
-  
   return (
     <div className="header">
+      <NavLink to="/bookmark">Bookmarks</NavLink>
       <div className="headerSearch">
         <div className="headerSearchItem">
           <MdLocationOn className="headerIcon locationIcon" />
@@ -64,22 +75,36 @@ function Header() {
         </div>
         <div className="headerSearchItem">
           <HiCalendar className="headerIcon dateIcon" />
-          <div onClick={()=> setOpenDate(!openDate)} className="dateDropDown">
-            {`${format(date[0].startDate , 'MM/dd/yyyy')} to ${format(date[0].endDate , 'MM/dd/yyyy')}`}
+          <div onClick={() => setOpenDate(!openDate)} className="dateDropDown">
+            {`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
+              date[0].endDate,
+              "MM/dd/yyyy"
+            )}`}
           </div>
-          {openDate && (<DateRange ranges={date} onChange={(item) => setDate([item.selection])} 
-            className="date"
-            minDate={new Date()}
-            moveRangeOnFirstSelection={true}
+          {openDate && (
+            <DateRange
+              onChange={(item) => setDate([item.selection])}
+              ranges={date}
+              className="date"
+              minDate={new Date()}
+              moveRangeOnFirstSelection={true}
             />
-            ) }
+          )}
+          <span className="seperator"></span>
         </div>
-        <span className="seperator"></span>
         <div className="headerSearchItem">
           <div id="optionDropDown" onClick={() => setOpenOptions(!openOptions)}>
-            {options.adult} adult &bull; {options.children} children &bull; {options.room}
+            {options.adult} adult &nbsp;&bull;&nbsp; {options.children} children
+            &nbsp;&bull;&nbsp;
+            {options.room} room
           </div>
-          {openOptions && <GuestOptionList options={options} setOpenOptions={setOpenOptions} handleOptions={handleOptions}/>}
+          {openOptions && (
+            <GuestOptionList
+              setOpenOptions={setOpenOptions}
+              handleOptions={handleOptions}
+              options={options}
+            />
+          )}
           <span className="seperator"></span>
         </div>
         <div className="headerSearchItem">
@@ -88,10 +113,10 @@ function Header() {
           </button>
         </div>
       </div>
+     
     </div>
   );
 }
-
 export default Header;
 
 function GuestOptionList({ options, handleOptions, setOpenOptions }) {
@@ -144,3 +169,4 @@ function OptionItem({ options, type, minLimit, handleOptions }) {
     </div>
   );
 }
+
